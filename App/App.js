@@ -4,20 +4,17 @@ import {
   StyleSheet,
   ScrollView,
   View,
-  Text,
   StatusBar,
   Animated,
   Button,
   Easing,
   Dimensions,
 } from 'react-native';
-import {Svg, Rect, Path} from 'react-native-svg';
+import {Svg, Path} from 'react-native-svg';
 import LinearGradient from 'react-native-linear-gradient';
 
-const AnimatedPath = Animated.createAnimatedComponent(Path);
-
 const App = () => {
-  const {width, height} = Dimensions.get('window');
+  const AnimatedPath = Animated.createAnimatedComponent(Path);
   const anim = useState(new Animated.Value(0))[0];
   const anim2 = useState(new Animated.Value(0))[0];
   const water = useState(new Animated.Value(0))[0];
@@ -53,23 +50,28 @@ const App = () => {
     inputRange: [0, 1],
     outputRange: [0, 1],
   });
+
   const offset = fillOpacity.interpolate({
     inputRange: [0, 1],
     outputRange: [0, 10],
   });
+
   const strokeOpacity = offset.interpolate({
     inputRange: [0, 10],
     outputRange: [0, 1],
     extrapolateRight: 'clamp',
   });
+
   const path = anim.interpolate({
     inputRange: [0, 0.25, 0.5, 0.75, 1],
     outputRange: [d1, d2, d3, d4, d5],
   });
+
   const path2 = anim2.interpolate({
     inputRange: [0, 0.25, 0.5, 0.75, 1],
     outputRange: [d6, d7, d8, d9, d10],
   });
+
   const fill = strokeOpacity.interpolate({
     inputRange: [0, 1],
     outputRange: ['rgba(102, 0, 255, 0.6)', 'rgba(0, 255, 255, 1)'],
@@ -85,7 +87,7 @@ const App = () => {
     outputRange: [0, -358],
   });
 
-  const translateWaterY = () => {
+  const startAnimation = () => {
     Animated.parallel([
       Animated.timing(water, {
         toValue: 1,
@@ -126,15 +128,7 @@ const App = () => {
           contentInsetAdjustmentBehavior="automatic"
           style={styles.scrollView}>
           <View style={styles.body}>
-            <View
-              style={{
-                marginTop: 120,
-                height: 300,
-                width: 300,
-                borderRadius: 300 / 2,
-                backgroundColor: 'rgba(242, 242, 242,0.1)',
-                overflow: 'hidden',
-              }}>
+            <View style={styles.circleDiv}>
               <View style={styles.circle}>
                 <Animated.View
                   style={[
@@ -143,22 +137,8 @@ const App = () => {
                   ]}>
                   <LinearGradient
                     colors={backgroundColorArray}
-                    style={{
-                      width: 300,
-                      height: 300,
-                      borderRadius: 300 / 2,
-                      borderTopLeftRadius: 10 / 2,
-                      borderTopRightRadius: 10 / 2,
-                    }}>
-                    <Svg
-                      viewBox="0 0 1440 320"
-                      style={{
-                        zIndex: 1,
-                        width: 300,
-                        height: 300,
-                        borderRadius: 300 / 2,
-                        marginTop: -183,
-                      }}>
+                    style={styles.lineargradient}>
+                    <Svg viewBox="0 0 1440 320" style={styles.svgWaves}>
                       <AnimatedPath d={path} fill={fill} />
                       <AnimatedPath d={path2} fill={fill2} />
                     </Svg>
@@ -166,17 +146,10 @@ const App = () => {
                 </Animated.View>
               </View>
             </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-around',
-                backgroundColor: 'white',
-                zIndex: 10,
-                marginTop: 30,
-              }}>
+            <View style={styles.buttonDiv}>
               <Button
                 style={styles.button}
-                onPress={() => translateWaterY()}
+                onPress={() => startAnimation()}
                 title="Start"
               />
               <Button
@@ -205,6 +178,14 @@ const styles = StyleSheet.create({
   body: {
     backgroundColor: 'white',
   },
+  circleDiv: {
+    marginTop: 120,
+    height: 300,
+    width: 300,
+    borderRadius: 300 / 2,
+    backgroundColor: 'rgba(242, 242, 242,0.1)',
+    overflow: 'hidden',
+  },
   circle: {
     marginTop: 150,
     width: 300,
@@ -224,9 +205,31 @@ const styles = StyleSheet.create({
     zIndex: -1,
     marginTop: 206,
   },
+
+  svgWaves: {
+    zIndex: 1,
+    width: 300,
+    height: 300,
+    borderRadius: 300 / 2,
+    marginTop: -183,
+  },
   button: {
     paddingTop: 30,
     zIndex: 10,
+  },
+  buttonDiv: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    backgroundColor: 'white',
+    zIndex: 10,
+    marginTop: 30,
+  },
+  lineargradient: {
+    width: 300,
+    height: 300,
+    borderRadius: 300 / 2,
+    borderTopLeftRadius: 10 / 2,
+    borderTopRightRadius: 10 / 2,
   },
 });
 
