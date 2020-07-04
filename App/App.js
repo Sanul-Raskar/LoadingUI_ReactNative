@@ -12,13 +12,9 @@ import {
   Dimensions,
 } from 'react-native';
 import {Svg, Rect, Path} from 'react-native-svg';
-const AnimatedPath = Animated.createAnimatedComponent(Path);
-const AnimatedRect = Animated.createAnimatedComponent(Rect);
+import LinearGradient from 'react-native-linear-gradient';
 
-{
-  /* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#0099ff" fill-opacity="1" d="M0,128L48,149.3C96,171,192,213,288,202.7C384,192,480,128,576,122.7C672,117,768,171,864,213.3C960,256,1056,288,1152,266.7C1248,245,1344,171,1392,133.3L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>
-   */
-}
+const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 const App = () => {
   const {width, height} = Dimensions.get('window');
@@ -41,7 +37,9 @@ const App = () => {
   const d6 =
     'M0,160L16,144C32,128,64,96,96,69.3C128,43,160,21,192,42.7C224,64,256,128,288,138.7C320,149,352,107,384,80C416,53,448,43,480,37.3C512,32,544,32,576,26.7C608,21,640,11,672,48C704,85,736,171,768,170.7C800,171,832,85,864,69.3C896,53,928,107,960,128C992,149,1024,139,1056,122.7C1088,107,1120,85,1152,85.3C1184,85,1216,107,1248,128C1280,149,1312,171,1344,192C1376,213,1408,235,1424,245.3L1440,256L1440,320L1424,320C1408,320,1376,320,1344,320C1312,320,1280,320,1248,320C1216,320,1184,320,1152,320C1120,320,1088,320,1056,320C1024,320,992,320,960,320C928,320,896,320,864,320C832,320,800,320,768,320C736,320,704,320,672,320C640,320,608,320,576,320C544,320,512,320,480,320C448,320,416,320,384,320C352,320,320,320,288,320C256,320,224,320,192,320C160,320,128,320,96,320C64,320,32,320,16,320L0,320Z';
 
-  const fillOpacity = anim.interpolate({
+  const backgroundColorArray =['#00ffff','#66c2ff','#0099ff'];
+  
+    const fillOpacity = anim.interpolate({
     inputRange: [0, 1],
     outputRange: [0, 1],
   });
@@ -64,36 +62,32 @@ const App = () => {
   });
   const fill = strokeOpacity.interpolate({
     inputRange: [0, 1],
-    outputRange: ['rgba(26, 26, 255, 0.3)', 'rgba(0, 153, 255, 1.0)'],
+    outputRange: ['rgba(26, 26, 255, 0.6)', 'rgba(0, 153, 255, 1)'],
   });
 
   const fill2 = strokeOpacity.interpolate({
     inputRange: [0, 1],
-    outputRange: ['rgba(0, 255, 255, 0.3)', 'rgba(0, 153, 255, 1.0)'],
+    outputRange: ['rgba(0, 255, 255, 0.6)', 'rgba(0, 255, 255, 1)'],
   });
 
   const water = useState(new Animated.Value(0))[0];
-  const opacity = useState(new Animated.Value(0))[0];
+  const opacity = useState(new Animated.Value(0.6))[0];
   const waterTranslate = water.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, -320],
-  });
-  const oneToFivePx = offset.interpolate({
-    inputRange: [0, 10],
-    outputRange: ['1px', '5px'],
+    outputRange: [0, -326],
   });
 
   const translateWaterY = () => {
     Animated.parallel([
       Animated.timing(water, {
         toValue: 1,
-        duration: 4000,
+        duration: 10000,
         useNativeDriver: true,
         easing: Easing.linear,
       }).start(),
       Animated.timing(opacity, {
         toValue: 1,
-        duration: 4000,
+        duration: 10000,
         useNativeDriver: true,
         easing: Easing.linear,
       }).start(),
@@ -120,25 +114,57 @@ const App = () => {
           contentInsetAdjustmentBehavior="automatic"
           style={styles.scrollView}>
           <View style={styles.body}>
-            {/* <View style={styles.circle}>
-              <Animated.View
-                style={[
-                  styles.water,
-                  {transform: [{translateY: waterTranslate}], opacity},
-                ]}
-              />
-            </View> */}
+            <View
+              style={[
+                {zIndex: 12},
+                {
+                  marginTop: 120,
+                  height: 300,
+                  width: 300,
+                  borderRadius: 300 / 2,
+                  backgroundColor: 'rgba(242, 242, 242,0.2)',
+                  overflow: 'hidden',
+                },
+              ]}>
+              <View style={styles.circle}>
+                <Animated.View
+                  style={[
+                    styles.water,
+                    {transform: [{translateY: waterTranslate}], opacity},
+                  ]}>
+                  <LinearGradient
+                    colors={backgroundColorArray}
+                    style={{
+                      width: 300,
+                      height: 300,
+                      borderRadius: 300 / 2,
+                      borderTopLeftRadius: 10 / 2,
+                      borderTopRightRadius: 10 / 2,
+                    }}>
+                    <Svg
+                      viewBox="0 0 1440 320"
+                      style={{
+                        zIndex: 1,
+                        width: 300,
+                        height: 300,
+                        borderRadius: 300 / 2,
+                        marginTop: -183,
+                      }}>
+                      <AnimatedPath d={path} fill={fill} opacity="0.56" />
+                      <AnimatedPath d={path2} fill={fill2} />
+                    </Svg>
+                  </LinearGradient>
+                </Animated.View>
+              </View>
+            </View>
 
-            {/*  <View style={{backgroundColor:'white'}}>
-
-              <Svg>
-                <Path d="M0,128L48,149.3C96,171,192,213,288,202.7C384,192,480,128,576,122.7C672,117,768,171,864,213.3C960,256,1056,288,1152,266.7C1248,245,1344,171,1392,133.3L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z" fill="#0099ff"></Path>
-              </Svg>
-              <Text style={{textAlign: 'center', marginVertical: 20,zIndex:10}}>
+            <View style={{backgroundColor: 'white'}}>
+              <Text
+                style={{textAlign: 'center', marginVertical: 20, zIndex: 10}}>
                 Downloading..
               </Text>
-            </View> */}
-            {/*  <View
+            </View>
+            <View
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-around',
@@ -152,9 +178,9 @@ const App = () => {
               />
 
               <Button style={styles.button} title="Reset" />
-            </View> */}
+            </View>
           </View>
-          <View style={styles.circle}>
+          {/* <View style={styles.circle}>
             <Svg
               viewBox="0 0 1440 320"
               width="100%"
@@ -164,7 +190,7 @@ const App = () => {
               <AnimatedPath d={path2} fill={fill2} opacity="0.78" />
             </Svg>
             <Button onPress={() => translateWaterY()} title="hello word" />
-          </View>
+          </View> */}
         </ScrollView>
       </SafeAreaView>
     </View>
@@ -190,15 +216,17 @@ const styles = StyleSheet.create({
     borderRadius: 300 / 2,
     marginBottom: 30,
     backgroundColor: 'transparent',
+    zIndex: 10,
   },
   water: {
     width: 300,
     height: 300,
     borderRadius: 300 / 2,
-    backgroundColor: 'lightblue',
-    zIndex: 0,
-    marginTop: 330,
-    opacity: 0,
+    borderTopLeftRadius: 20 / 2,
+    borderTopRightRadius: 20 / 2,
+    backgroundColor: '#0099ff',
+    zIndex: -1,
+    marginTop: 206,
   },
   button: {
     paddingTop: 30,
