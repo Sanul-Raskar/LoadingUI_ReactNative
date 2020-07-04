@@ -12,7 +12,7 @@
   <img style="padding:10px" src="/output/2.png" width="280" /> 
   <img style="padding:10px" src="/output/3.png" width="280" />
   <img style="padding:10px" src="/output/4.png" width="280" />
-  <img style="padding:10px" src="/output/5" width="280" />
+  <img style="padding:10px" src="/output/5.png" width="280" />
 </p>
 
 
